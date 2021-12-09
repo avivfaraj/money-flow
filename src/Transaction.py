@@ -42,7 +42,7 @@ class Transaction(ABC):
 		pass
 
 	@date.setter
-	def date(self, value = "" ):
+	def date(self, value = None ):
 		if value:
 			if not isinstance(value,dt):
 				raise Exception("Date must be datetime")
