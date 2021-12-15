@@ -1,8 +1,10 @@
 
-if __name__ == "__main__" or __name__ == "Income":
-	from Transaction import Transaction
-else:
-	from .Transaction import Transaction
+# if __name__ == "__main__" or __name__ == "Income":
+# 	from Transaction import Transaction
+# else:
+# 	from .Transaction import Transaction
+
+from transaction import Transaction
 
 class Income(Transaction):
 

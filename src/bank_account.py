@@ -1,4 +1,4 @@
-from Income import Income
+from income import Income
 from datetime import datetime as dt
 
 class Bank_Account(object):

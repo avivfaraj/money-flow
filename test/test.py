@@ -1,5 +1,5 @@
-from src.Income import Income
-from src.Expense import Expense
+from src.income import Income
+from src.expense import Expense
 from datetime import datetime
 
 first = Income(ID = 1, details = "Income from USAA", salary = 4.5)
