@@ -1,5 +1,5 @@
-from src.income import Income
-from src.expense import Expense
+from flow.src.income import Income
+from flow.src.expense import Expense
 from datetime import datetime
 
 first = Income(ID = 1, details = "Income from USAA", salary = 4.5)

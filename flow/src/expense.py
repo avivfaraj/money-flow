@@ -1,4 +1,4 @@
-from transaction import Transaction
+from .transaction import Transaction
 from datetime import datetime
 
 class Expense(Transaction):
