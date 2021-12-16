@@ -2,6 +2,11 @@ from abc import ABC, abstractmethod
 from datetime import datetime as dt
 
 class Transaction(ABC):
+
+	ID : int
+	details : str
+	date : dt
+
 	@abstractmethod
 	def __init__(self):
 		pass
@@ -21,28 +26,27 @@ class Transaction(ABC):
 	def details(self):
 		return self._details
 
+	@details.setter
+	def details(self, value = "" ):
+		if value:
+			self._details = value
+
 	@property
 	@abstractmethod
 	def total(self):
+		pass
+
+	@total.setter
+	@abstractmethod
+	def total(self, total):
 		pass
 
 	@property
 	def date(self):
 		return self._date
 
-	@details.setter
-	def details(self, value = "" ):
-		if value:
-			self._details = value
-
-
-	@total.setter
-	@abstractmethod
-	def total(self, salary):
-		pass
-
 	@date.setter
-	def date(self, value = None ):
+	def date(self, value = dt.now()):
 		if value:
 			if not isinstance(value,dt):
 				raise Exception("Date must be datetime")
@@ -52,7 +56,7 @@ class Transaction(ABC):
 			self._date = dt.now()
 
 	def date_str(self):
-		return self.date.strftime("%d/%m/%Y")
+		return self._date.strftime("%d/%m/%Y")
 
 	def time_str(self):
-		return self.date.strftime("%-I:%M %p")
+		return self._date.strftime("%-I:%M %p")

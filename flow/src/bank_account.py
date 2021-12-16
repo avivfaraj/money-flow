@@ -1,4 +1,5 @@
-from income import Income
+from flow.src.deposit import Deposit
+from flow.src.withdrawal import Withdrawal
 from datetime import datetime as dt
 
 class Bank_Account(object):
@@ -9,51 +10,58 @@ class Bank_Account(object):
 	transactions : list
 
 	def __init__(self,
-				 id_ = None,
+				 ID = None,
 				 name = "", 
 				 balance = None ,
 				 transactions = []):
-		self.set_ID(id_)
-		self.set_name(name)
-		self.set_balance(balance)
-		self.set_trans(transactions)
+		self.ID = ID
+		self.name = name
+		self.balance = balance 
+		self.transactions = transactions
 
-	def set_ID(self, id_ = ""):
-		if id_:
-			self.ID = id_
+	@property
+	def ID(self):
+		return self._ID
+
+	@ID.setter
+	def ID(self, ID = ""):
+		if ID:
+			self._ID = ID
 		else:
 			raise ValueError("ID must be positive")
 
-	def set_name(self, name = ""):
+	@property
+	def name(self):
+		return self._name
+	
+	@name.setter
+	def name(self, name = ""):
 		if isinstance(name, str):
 			if name:
-				self.name = name
+				self._name = name
 			else:
 				raise ValueError("Name was empty")
 		else:
 			raise TypeError("Name must be a string")
 
-	def set_balance(self, balance = None):
+	@property
+	def balance(self):
+		return self._balance
+	
+	@balance.setter
+	def balance(self, balance = None):
 		if isinstance(balance, (float,int)):
-			self.balance = balance
+			self._balance = balance
 		else:
 			raise TypeError("Balance must be either an integer or float")
 
-	def set_trans(self, transactions = []):
-		self.transactions = transactions
-
-
-	def get_ID(self):
-		return self.ID
-
-	def get_name(self):
-		return self.name
-
-	def get_balance(self):
-		return self.balance
-
-	def get_trans(self):
-		return self.transactions
+	@property
+	def transactions(self):
+		return self._transactions
+	
+	@transactions.setter
+	def transactions(self, transactions = []):
+		self._transactions = transactions
 
 	def update_balance(self, price = 0, income = False):
 		if income:
@@ -64,7 +72,7 @@ class Bank_Account(object):
 
 	def add_income(self, ID = None,details = "", salary = 0, date = dt.now()):
 		try:
-			new_income = Income(ID = ID, details = details, salary = salary, date = date)
+			new_income = Deposit(ID = ID, details = details, total = salary, date = date)
 		except Exception as err:
 			print(type(err).__name__,": ",str(err))
 			return False
@@ -73,19 +81,29 @@ class Bank_Account(object):
 		self.update_balance(new_income.total, True)
 		return True
 
-	def add_expense(self, details = "", amount = 1, unit_price = 0):
-		pass
+	def add_expense(self,ID = None, details = "", amount = 1, unit_price = 0, date = dt.now()):
+		try:
+			new_withdrawal = Withdrawal(ID = ID, details = details, date = date, unit_price = unit_price, amount = amount)
+		except Exception as err:
+			print(type(err).__name__,": ",str(err))
+			return False
+
+		self.transactions.append(new_withdrawal)
+		self.update_balance(new_withdrawal.total, False)
+		return True
 
 	def __str__(self):
-		b = "{:,.2f} $".format(self.get_balance())
-		return ("ID: " + str(self.get_ID()) +
-				"\nName: " + self.get_name()+
-				"\nBalance: " + b)
+		_ = "{:,.2f} $".format(self.balance)
+		return ("ID: " + str(self.ID) +
+				"\nName: " + self.name +
+				"\nBalance: " + _)
 
+if __name__ == "__main__":
 
-
-a = Bank_Account(id_ = 1, name = "Aviv", balance = 10)
-print(a.transactions)
-print(a.add_income(details = "Test 2", salary = 10, date = "a"))
-print(a.transactions)
-print(a.balance)
+	# test
+	a = Bank_Account(ID = 1, name = "Aviv", balance = 10)
+	print(a.transactions)
+	print(a.add_income(ID = 2,details = "Test 2", salary = 10, date = dt(2021,2,2)))
+	print(a.add_expense(ID = 2,details = "Test 2", date = dt(2021,2,2), amount = 1, unit_price = 3))
+	print(a.transactions)
+	print(a)

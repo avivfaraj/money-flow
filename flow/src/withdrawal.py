@@ -1,14 +1,20 @@
-from .transaction import Transaction
-from datetime import datetime
+from flow.src.transaction import Transaction
+from datetime import datetime as dt
 
-class Expense(Transaction):
+class Withdrawal(Transaction):
+
+	ID : int
+	details : str
+	date : dt
+	unit_price : float
+	amount : int
 
 	def __init__(self, ID = "",
 	 			 details = "",
-	 			 date = "",
+	 			 date = dt.now(),
 	 			 unit_price = "",
 	 			 amount = "" ):
-		self.ID = ID
+		self._ID = ID
 		self.details = details
 		self.date = date
 		self.amount = amount
@@ -64,12 +70,14 @@ class Expense(Transaction):
 				"\nDetails: "+ self.details +
 				"\nTotal Income: "+price)
 
+if __name__ == "__main__":
 
-# test
-# first = Expense(ID = 1,
-# 			 	details = "Bike shoes",
-# 			 	date = datetime(2021, 2,4,5,6),
-# 			 	unit_price = 4,
-# 			 	amount = 5)
-# print(first)
-# datetime.date(2021, 12, 3)
+	# test
+	first = Withdrawal(ID = 1,
+				 	details = "Bike shoes",
+				 	date = dt(2021, 2,4,5,6),
+				 	unit_price = 2,
+				 	amount = 5)
+
+	print(first)
+

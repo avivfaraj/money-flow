@@ -1,11 +1,17 @@
-from .transaction import Transaction
+from flow.src.transaction import Transaction
+from datetime import datetime as dt
 
-class Income(Transaction):
+class Deposit(Transaction):
 
-	def __init__(self, ID = "", details = "", salary = "", date = "" ):
+	ID : int
+	details : str
+	total : float
+	date : dt
+
+	def __init__(self, ID = "", details = "", total = None, date = dt.now() ):
 		self.ID = ID
 		self.details = details
-		self.total = salary
+		self.total = total
 		self.date = date
 
 	@property
@@ -31,7 +37,7 @@ class Income(Transaction):
 
 
 if __name__ == "__main__":
+
 	# test
-	first = Income(ID = 1, details = "Income from USAA", salary = 4.5)
+	first = Deposit(ID = 1, details = "Income from ASC", total = 3)
 	print(first)
-# # datetime.date(2021, 12, 3)
