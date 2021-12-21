@@ -50,20 +50,20 @@ def create_transaction(cursor):
     cursor.executescript("""CREATE TABLE IF NOT EXISTS transactions(id INTEGER PRIMARY KEY,
                             account_id INTEGER,
                             person_name TEXT, 
-                            details text,
+                            details TEXT,
+                            method TEXT,
+                            type TEXT,
                             quantity INTEGER,
                             price MONEY,
                             total MONEY ALWAYS AS (quantity * price) STORED,
-                            d_date date,
-                            d_time time,
                             balance MONEY DEFAULT NULL,
+                            d_date DATE,
+                            d_time TIME,
                             FOREIGN KEY (account_id) REFERENCES bank(id)
                                 ON DELETE SET NULL);
+                            """)
 
 
-                            CREATE TABLE IF NOT EXISTS transaction_type(id INTEGER PRIMARY KEY,
-                            transaction_type TEXT,
-                            FOREIGN KEY (id) REFERENCES transactions(id)
-                                ON DELETE SET NULL);""")
+    
 
 

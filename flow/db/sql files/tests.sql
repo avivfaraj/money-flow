@@ -31,4 +31,5 @@ JOIN ownership as o ON p.id = o.person_id
 JOIN bank as b ON o.account_id = b.id;
 
 
-INSERT INTO transactions VALUES(NULL,123, "test", 2,20,40,'14-07-2017','8:44')
+INSERT INTO transactions VALUES(NULL,123,"Aviv", "test","Credit","Withdrawal", 2,20,NULL,'14-07-2017','8:44');
+INSERT INTO transactions VALUES(NULL,123,"Aviv", "test","Credit","Deposit", 1,58.8,NULL,'14-07-2017','8:44');
