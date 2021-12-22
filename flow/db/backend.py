@@ -2,12 +2,14 @@ import sqlite3
 from datetime import datetime
 import re
 from sql.create import create_tables
-from sql.insert import insert_person
+from sql.insert import insert_person, new_transaction
 from sql.trigger import triggers
+from sql.update import update_transaction
+from sql.test import test as tst
 
 def date_time():
     time = datetime.now()
-    return time.strftime("%H:%M:%S"),time.strftime("%Y/%m/%d")
+    return time.strftime("%H:%M"),time.strftime("%Y-%m-%d")
 
 class CashFlowDB:
 
@@ -32,6 +34,9 @@ class CashFlowDB:
         # Error - missing info
         else:
             raise ValueError("Path to a new database or an existing one is missing!")
+
+    def run_test(self):
+        tst(self.cur)
 
     def insert_person(self , full_name = "" ):
 
@@ -62,6 +67,18 @@ class CashFlowDB:
         else:
             raise ValueError("Name is missing!")
 
+
+    def insert_transaction(self,bank_id, full_name, details,
+                    payment_method, t_type, quantity, unit_price):
+        new_transaction(self.cur,bank_id, full_name, details,
+                    payment_method, t_type, quantity, unit_price)
+        self.conn.commit()
+        last_id = self.cur.lastrowid
+        t,d = date_time()
+        update_transaction(self.cur, d,t, last_id)
+        self.conn.commit()
+
+
     def __del__(self):
         if self.conn:
             self.conn.close()
@@ -69,5 +86,11 @@ class CashFlowDB:
 
 if __name__ == "__main__":
     test = CashFlowDB("./test2.db")
-    test.insert_person("Aviv Farag")
-    test.delete_person(3)
+    # test.insert_person("Aviv Farag")
+    # test.delete_person(3)
+
+    # Tests
+    # test.run_test()
+    # test.insert_transaction(123,"Aviv", "test","Credit","Withdrawal", 2, 10.5)
+    # test.insert_transaction(123,"Aviv", "test","Credit","Deposit", 2, 10.5)
+

@@ -47,7 +47,8 @@ def create_card(cursor):
                                 ON DELETE SET NULL)""")
 
 def create_transaction(cursor):
-    cursor.executescript("""CREATE TABLE IF NOT EXISTS transactions(id INTEGER PRIMARY KEY,
+    cursor.executescript("""
+                            CREATE TABLE IF NOT EXISTS transaction_details(id INTEGER PRIMARY KEY,
                             account_id INTEGER,
                             person_name TEXT, 
                             details TEXT,
@@ -55,12 +56,17 @@ def create_transaction(cursor):
                             type TEXT,
                             quantity INTEGER,
                             price MONEY,
-                            total MONEY ALWAYS AS (quantity * price) STORED,
+                            FOREIGN KEY (account_id) REFERENCES bank(id)
+                                ON DELETE SET NULL);
+
+                            CREATE TABLE IF NOT EXISTS transaction_history(trans_id INTEGER PRIMARY KEY,
+                            total MONEY,
                             balance MONEY DEFAULT NULL,
                             d_date DATE,
                             d_time TIME,
-                            FOREIGN KEY (account_id) REFERENCES bank(id)
+                            FOREIGN KEY (trans_id) REFERENCES transaction_details(id)
                                 ON DELETE SET NULL);
+
                             """)
 
 
