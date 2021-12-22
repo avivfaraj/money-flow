@@ -3,16 +3,28 @@ from datetime import datetime as dt
 
 class Deposit(Transaction):
 
+	# Attributes
 	ID : int
 	details : str
 	total : float
 	date : dt
+	pay_method : str
 
-	def __init__(self, ID = "", details = "", total = None, date = dt.now() ):
+	# Note: Card is not an attribute
+	# because an income is usually either
+	# a wire transfer or a check.
+
+	def __init__(self, 
+				 ID = "", 
+				 details = "", 
+				 total = None, 
+				 date = dt.now(),
+				 pay_method = "Wire Transfer"):
 		self.ID = ID
 		self.details = details
 		self.total = total
 		self.date = date
+		self.pay_method = pay_method
 
 	@property
 	def total(self):
@@ -33,7 +45,8 @@ class Deposit(Transaction):
 		return ("Date: " + self.date_str() +
 				"\nTime: " + self.time_str() +
 				"\nDetails: "+ self.details +
-				"\nTotal Income: "+ price)
+				"\nTotal Income: "+ price+
+				"\nPayment Method: " + self.pay_method)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from flow.src.deposit import Deposit
 from flow.src.withdrawal import Withdrawal
+from flow.src.credit import Credit
+
 from datetime import datetime as dt
 
 class Bank_Account(object):
@@ -81,9 +83,15 @@ class Bank_Account(object):
 		self.update_balance(new_income.total, True)
 		return True
 
-	def add_expense(self,ID = None, details = "", amount = 1, unit_price = 0, date = dt.now()):
+	def add_expense(self,ID = None, details = "", amount = 1, unit_price = 0, date = dt.now(), pay_method = "Credit", card = None):
 		try:
-			new_withdrawal = Withdrawal(ID = ID, details = details, date = date, unit_price = unit_price, amount = amount)
+			new_withdrawal = Withdrawal(ID = ID, 
+										details = details, 
+										date = date, 
+										unit_price = unit_price, 
+										amount = amount,
+										pay_method = pay_method,
+										card = card)
 		except Exception as err:
 			print(type(err).__name__,": ",str(err))
 			return False
@@ -102,8 +110,10 @@ if __name__ == "__main__":
 
 	# test
 	a = Bank_Account(ID = 1, name = "Aviv", balance = 10)
+	c = Credit(ID = 1756, company = "VISA", account_num = 12)
+
 	print(a.transactions)
 	print(a.add_income(ID = 2,details = "Test 2", salary = 10, date = dt(2021,2,2)))
-	print(a.add_expense(ID = 2,details = "Test 2", date = dt(2021,2,2), amount = 1, unit_price = 3))
+	print(a.add_expense(ID = 2,details = "Test 2", date = dt(2021,2,2), amount = 1, unit_price = 3, card = c))
 	print(a.transactions)
 	print(a)

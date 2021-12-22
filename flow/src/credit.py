@@ -19,12 +19,14 @@ class Credit(Card):
 			  "\nCompany: " + self.company + 
 			  "\nAccount Number: "+ str(self.account_num) + 
 			  "\nBenefits: " + benefits )
+
 		
 
 
 if __name__ == "__main__":
 	try:
 		a = Credit(ID = 1756, company = "VISA", account_num = 12)
+		print(isinstance(a, Credit))
 	except Exception as err:
 		print(type(err).__name__,": ",str(err))
 	print(a)
