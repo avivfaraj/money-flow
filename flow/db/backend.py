@@ -25,11 +25,8 @@ class CashFlowDB:
             self.cur = self.conn.cursor()
 
             # Create tables in db
-            create_tables(self.cur)
-            triggers(self.cur)
-
-            # Commit changes
-            self.conn.commit()
+            create_tables(self.conn)
+            triggers(self.conn)
 
         # Error - missing info
         else:
@@ -44,9 +41,7 @@ class CashFlowDB:
         if full_name:
             if re.match("([A-Za-z\']{2,}[\s]?){2,3}", full_name):
 
-                insert_person(self.cur, full_name)
-
-                self.conn.commit()
+                insert_person(self.conn, full_name)
 
             else:
                 raise ValueError("Name is not valid!")
@@ -70,13 +65,16 @@ class CashFlowDB:
 
     def insert_transaction(self,bank_id, full_name, details,
                     payment_method, t_type, quantity, unit_price):
-        new_transaction(self.cur,bank_id, full_name, details,
+
+        # Insert new transaction
+        last_id = new_transaction(self.conn,bank_id, full_name, details,
                     payment_method, t_type, quantity, unit_price)
-        self.conn.commit()
-        last_id = self.cur.lastrowid
+
+        # Time and date
         t,d = date_time()
-        update_transaction(self.cur, d,t, last_id)
-        self.conn.commit()
+
+        # Update transaction's time and date in transaction_history
+        update_transaction(self.conn, d,t, last_id)
 
 
     def __del__(self):
@@ -86,11 +84,11 @@ class CashFlowDB:
 
 if __name__ == "__main__":
     test = CashFlowDB("./test2.db")
-    # test.insert_person("Aviv Farag")
+    # test.insert_person("Rachel Farag")
     # test.delete_person(3)
 
     # Tests
     # test.run_test()
-    # test.insert_transaction(123,"Aviv", "test","Credit","Withdrawal", 2, 10.5)
+    test.insert_transaction(123,"Aviv", "test","Credit","Withdrawal", 1, 380)
     # test.insert_transaction(123,"Aviv", "test","Credit","Deposit", 2, 10.5)
 
