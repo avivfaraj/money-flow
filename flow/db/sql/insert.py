@@ -6,25 +6,43 @@ def insert_person(conn, full_name):
                   params = (full_name,))
 
 
-def new_transaction(conn, bank_id, full_name, details,
-                    payment_method, t_type, quantity, unit_price):
+def new_transaction(conn, 
+                    bank_id, 
+                    full_name, 
+                    details, 
+                    sector, 
+                    payment_method, 
+                    t_type, 
+                    quantity, 
+                    unit_price):
+  if isinstance(conn,sqlite3.Connection):
     cur = conn.cursor()
 
-    query = """INSERT INTO transaction_details VALUES(NULL,?,?,?,?,?,?,?);"""
+    cur.execute("""SELECT id FROM bank;""")
+    existing_ids = [id_[0] for id_ in cur.fetchall()]
 
-    params = (bank_id, 
-              full_name, 
-              details,
-              payment_method, 
-              t_type, 
-              quantity, 
-              unit_price)
-    
-    cur.execute(query,params)
+    if bank_id in existing_ids:
 
-    conn.commit()
+      query = """INSERT INTO transaction_details VALUES(NULL,?,?,?,?,?,?,?,?);"""
 
-    return cur.lastrowid
+      params = (bank_id, 
+                full_name, 
+                details,
+                sector,
+                payment_method, 
+                t_type, 
+                quantity, 
+                unit_price)
+      
+      cur.execute(query,params)
+
+      conn.commit()
+
+      return cur.lastrowid
+    else:
+      raise ValueError("Bank ID does not exist!")
+  else:
+    raise TypeError("No connection to database")
 
 
 def execute_query(conn, query, params):

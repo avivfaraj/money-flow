@@ -2,10 +2,12 @@ import sqlite3
 from datetime import datetime
 import re
 from sql.create import create_tables
-from sql.insert import insert_person, new_transaction
+from sql.insert import insert_person, new_transaction, execute_query
 from sql.trigger import triggers
 from sql.update import update_transaction
+
 from sql.test import test as tst
+
 
 def date_time():
     time = datetime.now()
@@ -28,6 +30,7 @@ class CashFlowDB:
             create_tables(self.conn)
             triggers(self.conn)
 
+            execute_query(self.conn, "PRAGMA foreign_keys = ON;", ())
         # Error - missing info
         else:
             raise ValueError("Path to a new database or an existing one is missing!")
@@ -56,18 +59,18 @@ class CashFlowDB:
                             (ID,))
 
             self.conn.commit()
-            print(self.cur.rowcount) # Number of rows deleted
+            # print(self.cur.rowcount) # Number of rows deleted
 
         # Error - missing info
         else:
             raise ValueError("Name is missing!")
 
 
-    def insert_transaction(self,bank_id, full_name, details,
+    def insert_transaction(self,bank_id, full_name, details,sector, 
                     payment_method, t_type, quantity, unit_price):
 
         # Insert new transaction
-        last_id = new_transaction(self.conn,bank_id, full_name, details,
+        last_id = new_transaction(self.conn,bank_id, full_name, details,sector,
                     payment_method, t_type, quantity, unit_price)
 
         # Time and date
@@ -84,11 +87,14 @@ class CashFlowDB:
 
 if __name__ == "__main__":
     test = CashFlowDB("./test2.db")
-    # test.insert_person("Rachel Farag")
-    # test.delete_person(3)
 
     # Tests
-    # test.run_test()
-    test.insert_transaction(123,"Aviv", "test","Credit","Withdrawal", 1, 380)
+    test.run_test()
+    test.insert_transaction(223,"Aviv", "test","Fashion","Credit","Withdrawal", 1, 100)
     # test.insert_transaction(123,"Aviv", "test","Credit","Deposit", 2, 10.5)
 
+
+# List of errors: 
+# 1) FOREIGN KEY constraint failed - sqlite3.IntegrityError
+#    Since this error does not include the field in which the error occured,
+#    the best way to deal with it is to check if FOREIGN KEYS exist in database.

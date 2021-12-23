@@ -63,6 +63,7 @@ def create_transaction(conn):
                             account_id INTEGER,
                             person_name TEXT, 
                             details TEXT,
+                            sector TEXT,
                             method TEXT,
                             type TEXT,
                             quantity INTEGER,

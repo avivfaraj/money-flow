@@ -12,6 +12,7 @@ class Withdrawal(Transaction):
 	unit_price : float
 	amount : int
 	pay_method : str
+	sector : str
 	card : Union[Credit,Debit, None]
 
 	def __init__(self, ID = "",
@@ -19,6 +20,7 @@ class Withdrawal(Transaction):
 	 			 date = dt.now(),
 	 			 unit_price = "",
 	 			 amount = "",
+	 			 sector = "", 
 	 			 pay_method = "Credit",
 	 			 card = None):
 
@@ -28,6 +30,7 @@ class Withdrawal(Transaction):
 		self.amount = amount
 		self.unit_price = unit_price
 		self.pay_method = pay_method
+		self.sector = sector
 		self.card = card
 		self.total = (self.unit_price , self.amount)
 
@@ -72,6 +75,17 @@ class Withdrawal(Transaction):
 
 
 	@property
+	def sector(self):
+		return self._sector
+
+	@sector.setter
+	def sector(self, value = "" ):
+		if isinstance(value, (str)):
+			self._sector = value
+		else:
+			raise TypeError("Secotr must be a string")
+
+	@property
 	def card(self):
 		return self._card
 
@@ -100,6 +114,7 @@ class Withdrawal(Transaction):
 		return ("Date: " + self.date_str() +
 				"\nTime: " + self.time_str() +
 				"\nDetails: "+ self.details +
+				"\nSector: " + self.sector +
 				"\nTotal Income: "+price +
 				"\nPayment Method: "+ self.pay_method+
 				"\nCard: " + card_str)
@@ -113,6 +128,7 @@ if __name__ == "__main__":
 				 	date = dt(2021, 2,4,5,6),
 				 	unit_price = 2,
 				 	amount = 5,
+				 	sector = "Fashion",
 				 	pay_method = "Credit",
 				 	card = a)
 
