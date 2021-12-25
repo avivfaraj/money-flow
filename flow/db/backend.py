@@ -66,12 +66,12 @@ class CashFlowDB:
             raise ValueError("Name is missing!")
 
 
-    def insert_transaction(self,bank_id, full_name, details,sector, 
-                    payment_method, t_type, quantity, unit_price):
+    def insert_transaction(self,bank_id,method,method_id, full_name, details,sector, 
+                     t_type, quantity, unit_price):
 
         # Insert new transaction
-        last_id = new_transaction(self.conn,bank_id, full_name, details,sector,
-                    payment_method, t_type, quantity, unit_price)
+        last_id = new_transaction(self.conn,bank_id,method,method_id, full_name, details,sector,
+                     t_type, quantity, unit_price)
 
         # Time and date
         t,d = date_time()
@@ -90,8 +90,9 @@ if __name__ == "__main__":
 
     # Tests
     test.run_test()
-    test.insert_transaction(223,"Aviv", "test","Fashion","Credit","Withdrawal", 1, 100)
-    # test.insert_transaction(123,"Aviv", "test","Credit","Deposit", 2, 10.5)
+
+    # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Withdrawal", 1, 100)
 
 
 # List of errors: 

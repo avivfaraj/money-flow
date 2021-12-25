@@ -8,6 +8,7 @@ def create_tables(conn):
         create_ownership(conn)
         create_card(conn)
         create_transaction(conn)
+        create_payment_method(conn)
 
 def create_person(conn):
     execute_query(conn = conn,
@@ -19,8 +20,8 @@ def create_bank(conn):
      execute_query(conn = conn,
                   query = """CREATE TABLE IF NOT EXISTS bank(
                                     id INTEGER PRIMARY KEY,
-                                    name TEXT, 
-                                    balance REAL);""",
+                                    name TEXT NOT NULL, 
+                                    balance REAL DEFAULT 0);""",
                   params = ())
 
 def create_ownership(conn):
@@ -45,9 +46,9 @@ def create_card(conn):
                   query = """CREATE TABLE IF NOT EXISTS card(id INTEGER PRIMARY KEY,
                         person_id INTEGER,
                         account_id INTEGER,
-                        company TEXT,
-                        benefits TEXT,
-                        type TEXT,
+                        company TEXT NOT NULL,
+                        benefits TEXT DEFAULT '',
+                        type TEXT DEFAULT 'Credit',
                         FOREIGN KEY(account_id) 
                             REFERENCES bank(id)
                                 ON DELETE SET NULL,
@@ -61,14 +62,16 @@ def create_transaction(conn):
      execute_query(conn = conn,
                   query = """CREATE TABLE IF NOT EXISTS transaction_details(id INTEGER PRIMARY KEY,
                             account_id INTEGER,
+                            method_id INTEGER,
                             person_name TEXT, 
                             details TEXT,
                             sector TEXT,
-                            method TEXT,
                             type TEXT,
-                            quantity INTEGER,
-                            price MONEY,
+                            quantity INTEGER DEFAULT 1,
+                            price MONEY NOT NULL,
                             FOREIGN KEY (account_id) REFERENCES bank(id)
+                                ON DELETE SET NULL,
+                            FOREIGN KEY (method_id) REFERENCES payment_info(id)
                                 ON DELETE SET NULL);""",
                   params = ())
 
@@ -81,6 +84,15 @@ def create_transaction(conn):
                             FOREIGN KEY (trans_id) REFERENCES transaction_details(id)
                                 ON DELETE SET NULL);""",
                   params = ())
+
+
+def create_payment_method(conn):
+    execute_query(conn = conn,
+                  query = """CREATE TABLE IF NOT EXISTS payment_info(id INTEGER PRIMARY KEY,
+                            method TEXT,
+                            method_id INTEGER NOT NULL);""",
+                  params = ())
+
 
     
 
