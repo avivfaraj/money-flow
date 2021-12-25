@@ -2,11 +2,10 @@ import sqlite3
 from datetime import datetime
 import re
 from sql.create import create_tables
-from sql.insert import insert_person, new_transaction, execute_query
+from sql.insert import new_person, new_transaction, execute_query, new_bank
 from sql.trigger import triggers
 from sql.update import update_transaction
-
-from sql.test import test as tst
+from sql.test import automatic_test as tst
 
 
 def date_time():
@@ -36,7 +35,7 @@ class CashFlowDB:
             raise ValueError("Path to a new database or an existing one is missing!")
 
     def run_test(self):
-        tst(self.cur)
+        tst(self.conn)
 
     def insert_person(self , full_name = "" ):
 
@@ -44,7 +43,7 @@ class CashFlowDB:
         if full_name:
             if re.match("([A-Za-z\']{2,}[\s]?){2,3}", full_name):
 
-                insert_person(self.conn, full_name)
+                new_person(self.conn, full_name)
 
             else:
                 raise ValueError("Name is not valid!")
@@ -79,7 +78,9 @@ class CashFlowDB:
         # Update transaction's time and date in transaction_history
         update_transaction(self.conn, d,t, last_id)
 
-
+    def new_account(self, account_id, account_name, balance = 0):
+        new_bank(self.conn, account_id, account_name, balance)
+        
     def __del__(self):
         if self.conn:
             self.conn.close()
@@ -89,8 +90,8 @@ if __name__ == "__main__":
     test = CashFlowDB("./test2.db")
 
     # Tests
-    test.run_test()
-
+    # test.run_test()
+    test.new_account(111, "Capital One")
     # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
     # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Withdrawal", 1, 100)
 
