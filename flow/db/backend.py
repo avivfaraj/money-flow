@@ -4,7 +4,7 @@ import re
 from sql.create import create_tables
 from sql.insert import new_person, new_transaction, execute_query, new_bank
 from sql.trigger import triggers
-from sql.update import update_transaction
+from sql.update import update_transaction_dt,update_transaction_qp
 from sql.test import automatic_test as tst
 
 
@@ -76,7 +76,10 @@ class CashFlowDB:
         t,d = date_time()
 
         # Update transaction's time and date in transaction_history
-        update_transaction(self.conn, d,t, last_id)
+        update_transaction_dt(self.conn, d,t, last_id)
+
+    def update_transaction(self, trans_id, quantity, price):
+        update_transaction_qp(self.conn, quantity, price, trans_id)
 
     def new_account(self, account_id, account_name, balance = 0):
         new_bank(self.conn, account_id, account_name, balance)
@@ -87,13 +90,16 @@ class CashFlowDB:
 
 
 if __name__ == "__main__":
-    test = CashFlowDB("./test2.db")
+    test = CashFlowDB("./test3.db")
 
     # Tests
-    # test.run_test()
-    test.new_account(111, "Capital One")
-    # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
-    # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    test.run_test()
+    # test.new_account(111, "Capital One")
+    test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)
+    test.insert_transaction(223,"Check",1002,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    test.insert_transaction(223,"Check",1003,"Aviv", "test","Fashion","Deposit", 1, 100)
+    test.update_transaction(2, quantity = 1, price = 20)
 
 
 # List of errors: 
