@@ -61,7 +61,7 @@ def new_transaction(conn,
                 rowid = cur.execute("SELECT MAX(id) FROM payment_info;").fetchone()[0]
             else:
                 if method == "Credit":
-                rowid = cur.execute("""SELECT id FROM payment_info
+                    rowid = cur.execute("""SELECT id FROM payment_info
                                      WHERE method_id = ?;""", (method_id, )).fetchone()[0]
 
 
@@ -86,7 +86,7 @@ def new_transaction(conn,
         raise TypeError("No connection to database")
 
 
-def execute_query(conn, query, params):
+def execute_query(conn, query, params = ()):
 
     if isinstance(conn,sqlite3.Connection):
 
