@@ -1,2 +1,3 @@
-# cash-flow
-Python program to monitor cash flow in a bank account.
+# money-flow
+Python program to monitor balance in bank account.
+UNDER DEVELOPMENT
