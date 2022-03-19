@@ -36,20 +36,15 @@ class CashFlowDB:
     def run_test(self):
         tst(self.conn)
 
-    def insert_person(self , full_name = "" ):
+    def insert_person(self , first_name = "", middle_name = "", last_name = "" ):
 
         # Ensure all parameters received
-        if full_name:
-            if re.match("([A-Za-z\']{2,}[\s]?){2,3}", full_name):
+        if first_name and last_name:
 
-                new_person(self.conn, full_name)
+            new_person(self.conn, first_name, middle_name, last_name)
 
-            else:
-                raise ValueError("Name is not valid!")
-
-        # Missing info
         else:
-            raise ValueError("Name is missing!")
+            raise ValueError("Name is invalid")
 
     def delete_person(self, ID = None):
         if ID:  
@@ -92,7 +87,7 @@ if __name__ == "__main__":
     test = CashFlowDB("./test3.db")
 
     # Tests
-    # test.run_test()
+    test.run_test()
     # # test.new_account(111, "Capital One")
     # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
     # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)

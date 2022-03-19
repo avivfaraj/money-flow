@@ -3,6 +3,21 @@ from sql.insert import execute_query
 
 def create_tables(conn):
     with conn:
+        # For testing
+        conn.cursor().executescript("""
+        DROP TABLE IF EXISTS _Variables;
+        DROP TABLE IF EXISTS Payment;
+        DROP TABLE IF EXISTS Paym_Ownership;
+        DROP TABLE IF EXISTS Ownership;
+        DROP TABLE IF EXISTS Card;
+        DROP TABLE IF EXISTS trans_details;
+        DROP TABLE IF EXISTS trans_history;
+        DROP TABLE IF EXISTS Person;
+        DROP TABLE IF EXISTS Bank;
+        """)
+        ###
+        
+        print("creating tables")
         execute_query(conn, "PRAGMA foreign_keys = OFF;", ())
         create_person(conn)
         create_bank(conn)
@@ -12,6 +27,8 @@ def create_tables(conn):
         create_payment_method(conn)
         create_variables(conn)
         execute_query(conn, "PRAGMA foreign_keys = ON;", ())
+        conn.commit()
+        print("Finished")
 
 
 def create_person(conn):
@@ -27,7 +44,7 @@ def create_bank(conn):
 
      execute_query(conn = conn,
                   query = """CREATE TABLE IF NOT EXISTS Bank(
-                                    accountID INTEGER CONSTRAINT bank_pk PRIMARY KEY ASC ON CONFLICT ROLLBACK AUTOINCREMENT,
+                                    accountID INTEGER CONSTRAINT bank_pk PRIMARY KEY ASC ON CONFLICT ROLLBACK,
                                     bankName  TEXT    NOT NULL,
                                     balance   DOUBLE  DEFAULT (0));""")
 def create_ownership(conn):

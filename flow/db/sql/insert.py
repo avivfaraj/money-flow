@@ -1,37 +1,51 @@
 import sqlite3
 from sql.search import select_query
-def new_person(conn, full_name):
+def new_person(conn, first_name, last_name, middle_name = ""):
+    
+    params = (first_name, middle_name, last_name)
+    query = """INSERT INTO Person(firstName,middleName, lastName) VALUES(?,?,?);"""
 
+    if not middle_name:
+        query = """INSERT INTO Person(firstName, lastName) VALUES(?,?);"""
+        params = (first_name, last_name)
     execute_query(conn = conn,
-                query = """INSERT INTO person(name) VALUES(?);""",
-                params = (full_name,))
+                query = query,
+                params = params)
 
 
-def new_bank(conn, bank_id, bank_name, balance):
-    banks_info = select_query(conn, "SELECT id, name FROM bank;",())
-
-    if not (bank_id, bank_name) in banks_info:
-
+def new_bank(conn, account_id, bank_name, balance):
+    banks_info = select_query(conn, """SELECT accountID, bankName FROM Bank;""",())
+    if not (account_id, bank_name) in banks_info:
         execute_query(conn = conn,
-                  query = """INSERT INTO bank(id, name, balance) VALUES(?,?,?);""",
-                  params = (bank_id, bank_name, balance))
+                  query = """INSERT INTO Bank(accountID, bankName, balance) VALUES(?,?,?);""",
+                  params = (account_id, bank_name, balance))
     else:
-        raise ValueError("Bank already exists in the system!")
+        raise ValueError("Bank is already exists in the system!")
 
 def new_account_ownership(conn, person_id, account_id):
     execute_query(conn = conn,
-                query = """INSERT INTO ownership(person_id, account_id) VALUES (?, ?);""",
+                query = """INSERT INTO Ownership(personID, accountID) VALUES (?, ?);""",
                 params = (person_id, account_id))
 
 
-def new_card(conn, person_id, account_id, company, benefits, card_type):
+def new_card(conn, payment_id, account_id,company , type_, person_id):
     execute_query(conn = conn,
-                query = """INSERT INTO card(person_id, account_id, company, benefits, type) 
-                           VALUES (?, ?, ?, ?, ?);""",
-                params = (person_id, account_id, company, benefits, card_type))
+                query = """INSERT INTO Payment(paymentID, company, accountID) 
+                           VALUES (?, ?, ?);""",
+                params = (payment_id, company, account_id))
+
+    execute_query(conn = conn,
+                query = """INSERT INTO Card(cardID, cardType) 
+                           VALUES (?, ?);""",
+                params = (payment_id, type_))
+
+    execute_query(conn = conn,
+                query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
+                           VALUES ( ?, ?);""",
+                params = (person_id,payment_id))
 
 
-
+## Not updated
 def new_transaction(conn, 
                     bank_id,
                     method,
