@@ -12,7 +12,7 @@ class Deposit(Transaction):
 
 	# Note: Card is not an attribute
 	# because an income is usually either
-	# a wire transfer or a check.
+	# a wire transfer or a cheque.
 
 	def __init__(self, 
 				 ID = "", 

@@ -57,22 +57,97 @@ END;
 
 
 
-CREATE TRIGGER insert_transaction
-AFTER INSERT
-ON transaction_details
+-- Trigger: new_deposit
+DROP TRIGGER IF EXISTS new_deposit;
+CREATE TRIGGER new_deposit
+         AFTER INSERT
+            ON trans_details
+          WHEN NEW.type = 'Deposit'
 BEGIN
-INSERT INTO _Variables (diff) VALUES (CASE
-                      WHEN NEW.type = "Deposit" 
-                      THEN 
-                          NEW.quantity * NEW.price
-                      ELSE
-                          -NEW.quantity * NEW.price
-                      END
-                    );
-UPDATE bank
-          SET balance = balance + (SELECT diff FROM _Variables)
-          WHERE id = NEW.account_id;
-INSERT INTO transaction_history (total, balance)
-          VALUES ((SELECT diff FROM _Variables), (SELECT balance FROM bank WHERE id = NEW.account_id));
-DELETE FROM _Variables WHERE id =1;
+    INSERT INTO _Variables VALUES (
+                               (NEW.quantity * NEW.price - NEW.discount),
+                               (
+                                   SELECT accountID
+                                     FROM Payment
+                                    WHERE paymentID = NEW.paymentID
+                               )
+                           );
+    UPDATE Bank
+       SET balance = balance + (
+                                   SELECT total
+                                     FROM _Variables
+                               )
+     WHERE Bank.accountID = (
+                                SELECT bankID
+                                  FROM _Variables
+                            );
+    INSERT INTO trans_history (
+                                  transID,
+                                  total,
+                                  balance
+                              )
+                              VALUES (
+                                  NEW.transID,
+                                  (
+                                      SELECT total
+                                        FROM _Variables
+                                  ),
+                                  (
+                                      SELECT balance
+                                        FROM Bank
+                                       WHERE bank.accountID = (
+                                                                  SELECT bankID
+                                                                    FROM _Variables
+                                                              )
+                                  )
+                              );
+    DELETE FROM _Variables;
+END;
+
+
+-- Trigger: new_withdrawal
+DROP TRIGGER IF EXISTS new_withdrawal;
+CREATE TRIGGER new_withdrawal
+         AFTER INSERT
+            ON trans_details
+          WHEN new.type = 'Withdrawal'
+BEGIN
+    INSERT INTO _Variables VALUES (
+                               (NEW.quantity * NEW.price - NEW.discount),
+                               (
+                                   SELECT accountID
+                                     FROM Payment
+                                    WHERE paymentID = NEW.paymentID
+                               )
+                           );
+    UPDATE Bank
+       SET balance = balance - (
+                                   SELECT total
+                                     FROM _Variables
+                               )
+     WHERE Bank.accountID = (
+                                SELECT bankID
+                                  FROM _Variables
+                            );
+    INSERT INTO trans_history (
+                                transID,
+                                total,
+                                balance
+                              )
+                              VALUES (
+                                  NEW.transID,
+-                                 (
+                                      SELECT total
+                                        FROM _Variables
+                                  ),
+                                  (
+                                      SELECT balance
+                                        FROM Bank
+                                       WHERE bank.accountID = (
+                                                                  SELECT bankID
+                                                                    FROM _Variables
+                                                              )
+                                  )
+                              );
+    DELETE FROM _Variables;
 END;
