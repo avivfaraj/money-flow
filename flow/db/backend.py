@@ -27,9 +27,8 @@ class CashFlowDB:
 
             # Create tables in db
             create_tables(self.conn)
-            triggers(self.conn)
+            # triggers(self.conn)
 
-            execute_query(self.conn, "PRAGMA foreign_keys = ON;", ())
         # Error - missing info
         else:
             raise ValueError("Path to a new database or an existing one is missing!")
@@ -93,13 +92,13 @@ if __name__ == "__main__":
     test = CashFlowDB("./test3.db")
 
     # Tests
-    test.run_test()
-    # test.new_account(111, "Capital One")
-    test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
-    test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)
-    test.insert_transaction(223,"Check",1002,"Aviv", "test","Fashion","Withdrawal", 1, 100)
-    test.insert_transaction(223,"Check",1003,"Aviv", "test","Fashion","Deposit", 1, 100)
-    test.update_transaction(2, quantity = 1, price = 20)
+    # test.run_test()
+    # # test.new_account(111, "Capital One")
+    # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)
+    # test.insert_transaction(223,"Check",1002,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    # test.insert_transaction(223,"Check",1003,"Aviv", "test","Fashion","Deposit", 1, 100)
+    # test.update_transaction(2, quantity = 1, price = 20)
 
 
 # List of errors: 
