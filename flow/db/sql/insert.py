@@ -47,57 +47,37 @@ def new_card(conn, payment_id, account_id,company , type_, person_id):
 
 ## Not updated
 def new_transaction(conn, 
-                    bank_id,
-                    method,
-                    method_id,
-                    full_name, 
                     details, 
                     sector,
                     t_type, 
                     quantity, 
-                    unit_price):
-    if isinstance(conn,sqlite3.Connection):
+                    unit_price,
+                    discount,
+                    payment_id):
+    with conn:
         cur = conn.cursor()
 
-        cur.execute("""SELECT id FROM bank;""")
+        cur.execute("""SELECT paymentID FROM Payment;""")
         existing_ids = [id_[0] for id_ in cur.fetchall()]
 
-        if bank_id in existing_ids:
-          
-            cur.execute("""SELECT method, method_id 
-                         FROM payment_info;""")
-            rowid = -1
+        if payment_id in existing_ids:
 
-            if not (method, method_id) in cur.fetchall():
-                execute_query(conn = conn,
-                          query = "INSERT INTO payment_info(method, method_id) VALUES (?, ?);",
-                          params = (method, method_id))
-                rowid = cur.execute("SELECT MAX(id) FROM payment_info;").fetchone()[0]
-            else:
-                if method == "Credit":
-                    rowid = cur.execute("""SELECT id FROM payment_info
-                                     WHERE method_id = ?;""", (method_id, )).fetchone()[0]
+            query = """INSERT INTO trans_details VALUES(NULL,?,?,?,?,?,?,?);"""
 
-
-            query = """INSERT INTO transaction_details VALUES(NULL,?,?,?,?,?,?,?,?);"""
-
-            params = (bank_id,
-                    rowid,
-                    full_name, 
-                    details,
+            params = (details,
                     sector, 
                     t_type, 
                     quantity, 
-                    unit_price)
+                    unit_price,
+                    discount,
+                    payment_id)
             cur.execute(query,params)
 
             conn.commit()
 
             return cur.lastrowid
         else:
-            raise ValueError("Bank ID does not exist!")
-    else:
-        raise TypeError("No connection to database")
+            raise ValueError("Payment does not exist in DB!")
 
 
 def execute_query(conn, query, params = ()):

@@ -27,7 +27,7 @@ class CashFlowDB:
 
             # Create tables in db
             create_tables(self.conn)
-            # triggers(self.conn)
+            triggers(self.conn)
 
         # Error - missing info
         else:
@@ -59,12 +59,12 @@ class CashFlowDB:
             raise ValueError("Name is missing!")
 
 
-    def insert_transaction(self,bank_id,method,method_id, full_name, details,sector, 
-                     t_type, quantity, unit_price):
+    def insert_transaction(self, details,sector, 
+                     t_type, quantity, unit_price, discount, payment_id):
 
         # Insert new transaction
-        last_id = new_transaction(self.conn,bank_id,method,method_id, full_name, details,sector,
-                     t_type, quantity, unit_price)
+        last_id = new_transaction(self.conn,details,sector,
+                     t_type, quantity, unit_price, discount, payment_id)
 
         # Time and date
         t,d = date_time()
@@ -89,7 +89,9 @@ if __name__ == "__main__":
     # Tests
     test.run_test()
     # # test.new_account(111, "Capital One")
-    # test.insert_transaction(223,"Credit",1234,"Aviv", "test","Fashion","Withdrawal", 1, 100)
+    test.insert_transaction("test","Fashion","Withdrawal", 1, 100, 0, 2222)
+    test.insert_transaction("Another Test","Salary","Deposit", 1, 200, 0, 4144)
+
     # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)
     # test.insert_transaction(223,"Check",1002,"Aviv", "test","Fashion","Withdrawal", 1, 100)
     # test.insert_transaction(223,"Check",1003,"Aviv", "test","Fashion","Deposit", 1, 100)
