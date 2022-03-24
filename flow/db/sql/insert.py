@@ -29,37 +29,47 @@ def new_account_ownership(conn, person_id, account_id):
 
 
 def new_card(conn, payment_id, account_id,company , type_, person_id):
-    execute_query(conn = conn,
-                query = """INSERT INTO Payment(paymentID, company, accountID) 
-                           VALUES (?, ?, ?);""",
-                params = (payment_id, company, account_id))
+    try:
+        execute_query(conn = conn,
+                    query = """INSERT INTO Payment(paymentID, company, accountID) 
+                               VALUES (?, ?, ?);""",
+                    params = (payment_id, company, account_id),
+                    commit = False)
 
-    execute_query(conn = conn,
-                query = """INSERT INTO Card(cardID, cardType) 
-                           VALUES (?, ?);""",
-                params = (payment_id, type_))
+        execute_query(conn = conn,
+                    query = """INSERT INTO Card(cardID, cardType) 
+                               VALUES (?, ?);""",
+                    params = (payment_id, type_),
+                    commit = False)
 
-    execute_query(conn = conn,
-                query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
-                           VALUES ( ?, ?);""",
-                params = (person_id,payment_id))
+        execute_query(conn = conn,
+                    query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
+                               VALUES ( ?, ?);""",
+                    params = (person_id,payment_id))
+    except Exception:
+        conn.rollback()
 
 
 def new_wire(conn, payment_id, account_id, company, person_id, recipient, sender, type_, details):
-    execute_query(conn = conn,
-                query = """INSERT INTO Payment(paymentID, company, accountID) 
-                           VALUES (?, ?, ?);""",
-                params = (payment_id, company, account_id))
+    try:
+        execute_query(conn = conn,
+                    query = """INSERT INTO Payment(paymentID, company, accountID) 
+                               VALUES (?, ?, ?);""",
+                    params = (payment_id, company, account_id),
+                    commit = False)
 
-    execute_query(conn = conn,
-                query = """INSERT INTO Wire 
-                           VALUES (?, ?, ?, ?, ?);""",
-                params = (payment_id,recipient, sender ,type_, details))
+        execute_query(conn = conn,
+                    query = """INSERT INTO Wire 
+                               VALUES (?, ?, ?, ?, ?);""",
+                    params = (payment_id,recipient, sender ,type_, details),
+                    commit = False)
 
-    execute_query(conn = conn,
-                query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
-                           VALUES ( ?, ?);""",
-                params = (person_id,payment_id))
+        execute_query(conn = conn,
+                    query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
+                               VALUES ( ?, ?);""",
+                    params = (person_id,payment_id))
+    except Exception:
+        conn.rollback()
 
 
 ## Not updated
@@ -97,13 +107,13 @@ def new_transaction(conn,
             raise ValueError("Payment does not exist in DB!")
 
 
-def execute_query(conn, query, params = ()):
+def execute_query(conn, query, params = (), commit = True):
 
     if isinstance(conn,sqlite3.Connection):
-
         conn.cursor().execute(query, params)
-        conn.commit()
 
+        if commit:
+            conn.commit()
     else:
         raise TypeError("No connection to database") 
 
