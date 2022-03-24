@@ -2,7 +2,7 @@ from flow.src.withdrawal import Withdrawal
 from flow.src.deposit import Deposit
 from datetime import datetime
 
-first = Deposit(ID = 1, details = "Income from USAA", total = 4.5)
+first = Deposit(ID = 1, details = "Income", total = 4.5)
 print(first)
 print()
 first = Withdrawal(ID = 1,

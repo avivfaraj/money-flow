@@ -10,10 +10,13 @@ def create_tables(conn):
         DROP TABLE IF EXISTS Paym_Ownership;
         DROP TABLE IF EXISTS Ownership;
         DROP TABLE IF EXISTS Card;
+        DROP TABLE IF EXISTS Benefits;
         DROP TABLE IF EXISTS trans_details;
         DROP TABLE IF EXISTS trans_history;
         DROP TABLE IF EXISTS Person;
         DROP TABLE IF EXISTS Bank;
+        DROP TABLE IF EXISTS Cheque;
+        DROP TABLE IF EXISTS Wire;
         """)
         ###
         
@@ -26,6 +29,8 @@ def create_tables(conn):
         create_transaction(conn)
         create_payment_method(conn)
         create_variables(conn)
+        create_cheque(conn)
+        create_wire_transfer(conn)
         execute_query(conn, "PRAGMA foreign_keys = ON;", ())
         conn.commit()
         print("Finished")
@@ -72,6 +77,20 @@ def create_card(conn):
                                                                         ON UPDATE RESTRICT,
                                 cardType TEXT    DEFAULT ('Debit') 
                             );""")
+
+        execute_query(conn = conn,
+                  query = """CREATE TABLE Benefits (
+    cardID    INTEGER CONSTRAINT benefits_fk1 REFERENCES Card (cardID) ON DELETE CASCADE
+                                                                       ON UPDATE RESTRICT
+                      NOT NULL,
+    benefitID INTEGER NOT NULL,
+    details   TEXT    NOT NULL,
+    CONSTRAINT benefits_pk PRIMARY KEY (
+        cardID,
+        benefitID ASC
+    )
+    ON CONFLICT ROLLBACK
+);""")
 
 def create_transaction(conn):
 
@@ -132,7 +151,29 @@ def create_variables(conn):
     bankID INTEGER REFERENCES Bank (accountID) 
 );""")
 
+def create_cheque(conn):
+    execute_query(conn = conn,
+                  query = """CREATE TABLE Cheque (
+    chequeID INTEGER PRIMARY KEY
+                     CONSTRAINT cheque_fk REFERENCES Payment (paymentID) ON DELETE CASCADE
+                                                                         ON UPDATE RESTRICT,
+    payTo    TEXT    NOT NULL,
+    memo     TEXT    NOT NULL
+);""")
 
-    
+
+def create_wire_transfer(conn):
+    execute_query(conn = conn,
+                  query = """CREATE TABLE Wire (
+    wireID    INTEGER PRIMARY KEY
+                      CONSTRAINT wire_fk REFERENCES Payment (paymentID) ON DELETE CASCADE
+                                                                        ON UPDATE RESTRICT,
+    recipient TEXT    NOT NULL,
+    sender    TEXT    NOT NULL,
+    type      TEXT    CHECK (type IN ('Domestic', 'International') ) 
+                      NOT NULL,
+    details   TEXT    NOT NULL
+);""")
+
 
 

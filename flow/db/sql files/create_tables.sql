@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.3.3 on Sat Mar 19 07:17:49 2022
+-- File generated with SQLiteStudio v3.3.3 on Thu Mar 24 18:09:38 2022
 --
 -- Text encoding used: UTF-8
 --
@@ -46,10 +46,23 @@ CREATE TABLE Benefits (
 DROP TABLE IF EXISTS Card;
 
 CREATE TABLE Card (
-    cardID   INTEGER CONSTRAINT card_pk PRIMARY KEY ON CONFLICT ROLLBACK
-                     CONSTRAINT card_fk1 REFERENCES Payment (paymentID) ON DELETE CASCADE
-                                                                        ON UPDATE RESTRICT,
-    cardType TEXT    DEFAULT ('Debit') 
+    cardID    INTEGER CONSTRAINT card_pk PRIMARY KEY ON CONFLICT ROLLBACK
+                      CONSTRAINT card_fk1 REFERENCES Payment (paymentID) ON DELETE CASCADE
+                                                                         ON UPDATE RESTRICT,
+    cardType  TEXT    DEFAULT ('Debit'),
+    ownerName         NOT NULL
+);
+
+
+-- Table: Cheque
+DROP TABLE IF EXISTS Cheque;
+
+CREATE TABLE Cheque (
+    chequeID INTEGER PRIMARY KEY
+                     CONSTRAINT cheque_fk REFERENCES Payment (paymentID) ON DELETE CASCADE
+                                                                         ON UPDATE RESTRICT,
+    payTo    TEXT    NOT NULL,
+    memo     TEXT    NOT NULL
 );
 
 
@@ -143,6 +156,20 @@ CREATE TABLE trans_history (
     trans_time TIME    DEFAULT (TIME('now') ) 
 );
 
+
+-- Table: Wire
+DROP TABLE IF EXISTS Wire;
+
+CREATE TABLE Wire (
+    wireID    INTEGER PRIMARY KEY
+                      CONSTRAINT wire_fk REFERENCES Payment (paymentID) ON DELETE CASCADE
+                                                                        ON UPDATE RESTRICT,
+    recipient TEXT    NOT NULL,
+    sender    TEXT    NOT NULL,
+    type      TEXT    CHECK (type IN ('Domestic', 'International') ) 
+                      NOT NULL,
+    details   TEXT    NOT NULL
+);
 
 
 COMMIT TRANSACTION;
