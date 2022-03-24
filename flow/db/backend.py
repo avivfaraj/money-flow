@@ -88,14 +88,8 @@ if __name__ == "__main__":
 
     # Tests
     test.run_test()
-    # # test.new_account(111, "Capital One")
     test.insert_transaction("test","Fashion","Withdrawal", 1, 100, 0, 2222)
-    test.insert_transaction("Another Test","Salary","Deposit", 1, 200, 0, 4144)
-
-    # test.insert_transaction(223,"Check",1001,"Aviv", "test","Fashion","Deposit", 1, 100)
-    # test.insert_transaction(223,"Check",1002,"Aviv", "test","Fashion","Withdrawal", 1, 100)
-    # test.insert_transaction(223,"Check",1003,"Aviv", "test","Fashion","Deposit", 1, 100)
-    # test.update_transaction(2, quantity = 1, price = 20)
+    test.insert_transaction("Another Test","Salary","Deposit", 1, 200, 0, 10001)
 
 
 # List of errors: 

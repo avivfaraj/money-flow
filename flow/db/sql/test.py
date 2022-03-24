@@ -15,4 +15,6 @@ def automatic_test(conn):
     new_card(conn, 4144,123,"Visa", "Debit", 2)
     new_card(conn, 2222,223,"Mastercard", "Credit", 1)
 
+    new_wire(conn, 10001,223,"Charles Schwab",1,"Employee","Employer","Domestic", "Salary")
+
 

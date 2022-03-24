@@ -45,6 +45,23 @@ def new_card(conn, payment_id, account_id,company , type_, person_id):
                 params = (person_id,payment_id))
 
 
+def new_wire(conn, payment_id, account_id, company, person_id, recipient, sender, type_, details):
+    execute_query(conn = conn,
+                query = """INSERT INTO Payment(paymentID, company, accountID) 
+                           VALUES (?, ?, ?);""",
+                params = (payment_id, company, account_id))
+
+    execute_query(conn = conn,
+                query = """INSERT INTO Wire 
+                           VALUES (?, ?, ?, ?, ?);""",
+                params = (payment_id,recipient, sender ,type_, details))
+
+    execute_query(conn = conn,
+                query = """INSERT INTO Paym_Ownership(personID, payment_ID) 
+                           VALUES ( ?, ?);""",
+                params = (person_id,payment_id))
+
+
 ## Not updated
 def new_transaction(conn, 
                     details, 
