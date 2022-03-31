@@ -1,6 +1,6 @@
 import sqlite3
 from sql.search import select_query
-def new_person(conn, first_name: str, last_name: str, middle_name: str = ""):
+def new_person(conn: "sqlite.Connection", first_name: str, last_name: str, middle_name: str = ""):
     '''
     Insert new person to the database
 
@@ -16,12 +16,17 @@ def new_person(conn, first_name: str, last_name: str, middle_name: str = ""):
         query = """INSERT INTO Person(firstName, lastName) VALUES(?,?);"""
         params = (first_name, last_name)
 
-    execute_query(conn = conn,
+    try:
+        execute_query(conn = conn,
                 query = query,
                 params = params)
 
+        print("Person inserted successfully")
 
-def new_bank(conn, account_id: int, bank_name: str, balance: float):
+    except TypeError as err:
+        print("** Error **", err)
+
+def new_bank(conn: "sqlite.Connection", account_id: int, bank_name: str, balance: float):
     '''
     Insert a new bank account
 
@@ -33,13 +38,20 @@ def new_bank(conn, account_id: int, bank_name: str, balance: float):
     '''
     banks_info = select_query(conn, """SELECT accountID, bankName FROM Bank;""",())
     if not (account_id, bank_name) in banks_info:
-        execute_query(conn = conn,
+
+        try:
+            execute_query(conn = conn,
                   query = """INSERT INTO Bank(accountID, bankName, balance) VALUES(?,?,?);""",
                   params = (account_id, bank_name, balance))
-    else:
-        raise ValueError("Bank is already exists in the system!")
 
-def new_account_ownership(conn, person_id: int, account_id: int):
+            print("Bank inserted successfully")
+
+        except TypeError as err:
+            print("** Error **", err)
+    else:
+        raise ValueError("Bank is already exist in the system!")
+
+def new_account_ownership(conn: "sqlite.Connection", person_id: int, account_id: int):
     '''
     Add an owner to an existing bank account. 
     Both the owner and the bank account must be registered in the database.
@@ -49,12 +61,18 @@ def new_account_ownership(conn, person_id: int, account_id: int):
     person_id -> The auto-generated ID to identify the person (int)
     account_id -> 4 digits of bank account (int)
     '''
-    execute_query(conn = conn,
+
+    try:
+        execute_query(conn = conn,
                 query = """INSERT INTO Ownership(personID, accountID) VALUES (?, ?);""",
                 params = (person_id, account_id))
 
+        print("New bank ownership added successfully")
 
-def new_card(conn,
+    except TypeError as err:
+        print("** Error **", err)
+
+def new_card(conn: "sqlite.Connection",
              payment_id: int,
              account_id: int,
              company: str , 
@@ -92,6 +110,11 @@ def new_card(conn,
                                VALUES ( ?, ?);""",
                     params = (person_id,payment_id))
 
+        print("Card was inserted successfully")
+
+    except TypeError as err:
+        print("** Error **", err)
+
     # An error - Rollback  
     except Exception:
         print("An error occured while inserting a new card. Rolling back....")
@@ -99,7 +122,7 @@ def new_card(conn,
         print("Rollback Completed")
 
 
-def new_wire(conn,
+def new_wire(conn: "sqlite.Connection",
              payment_id: int,
              account_id: int, 
              company: str, 
@@ -142,13 +165,17 @@ def new_wire(conn,
                                VALUES ( ?, ?);""",
                     params = (person_id, payment_id))
 
+        print("Wire transfer was inserted successfully")
+    except TypeError as err:
+        print("** Error **", err)
+
     # An error - Rollback 
     except Exception:
         print("An error occured while creating a new wire transfer. Rolling back....")
         conn.rollback()
         print("Rollback Completed")
 
-def new_cheque(conn, 
+def new_cheque(conn: "sqlite.Connection", 
                payment_id: int, 
                account_id: int, 
                company: str, 
@@ -178,27 +205,32 @@ def new_cheque(conn,
                                VALUES (?, ?);""",
                     params = (pay_to,memo))
 
+        print("New cheque was successfully inserted")
+    except TypeError as err:
+        print("** Error **", err)
     except Exception:
         conn.rollback()
         print("Rollback Completed")
 
 
-## Not updated
-def new_transaction(conn, 
-                    details, 
-                    sector,
-                    t_type, 
-                    quantity, 
-                    unit_price,
-                    discount,
-                    payment_id):
-    with conn:
+def new_transaction(conn: "sqlite.Connection", 
+                    details: str, 
+                    sector: str,
+                    t_type: str, 
+                    quantity: int, 
+                    unit_price: float,
+                    discount: float,
+                    payment_id: int):
+
+    if isinstance(conn,sqlite3.Connection):
         cur = conn.cursor()
 
-        cur.execute("""SELECT paymentID FROM Payment;""")
-        existing_ids = [id_[0] for id_ in cur.fetchall()]
+        # Fetch payment ID from database
+        cur.execute("""SELECT * FROM Payment WHERE PaymentID = ?;""", (payment_id,))
+        fetched = [id_[0] for id_ in cur.fetchall()]
 
-        if payment_id in existing_ids:
+        # Ensure payment exist
+        if len(fetched) == 1:
 
             query = """INSERT INTO trans_details VALUES(NULL,?,?,?,?,?,?,?);"""
 
