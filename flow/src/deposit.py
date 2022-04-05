@@ -1,5 +1,9 @@
 from flow.src.transaction import Transaction
+from flow.src.wire_transfer import Wire
+from flow.src.cheque import Cheque
+
 from datetime import datetime as dt
+from typing import Union
 
 class Deposit(Transaction):
 
@@ -8,7 +12,7 @@ class Deposit(Transaction):
 	details : str
 	total : float
 	date : dt
-	pay_method : str
+	pay_method : Union[Cheque,Wire]
 
 	# Note: Card is not an attribute
 	# because an income is usually either
@@ -46,11 +50,19 @@ class Deposit(Transaction):
 				"\nTime: " + self.time_str() +
 				"\nDetails: "+ self.details +
 				"\nTotal Income: "+ price+
-				"\nPayment Method: " + self.pay_method)
+				"\nPayment Method: " + str(self.pay_method))
 
 
 if __name__ == "__main__":
 
 	# test
-	first = Deposit(ID = 1, details = "Income from ASC", total = 3)
+	w = Wire(4010, 
+			 "Bank of America", 
+			 4111,
+			 "Myself",
+			 "Work",
+			 "Domestic",
+			 "Salary")
+
+	first = Deposit(ID = 1, details = "Income from ASC", total = 3, pay_method = w)
 	print(first)

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime as dt
-from flow.src.credit import Credit
-from flow.src.debit import Debit
+from flow.src.card import Card
 from typing import Union
 
 class Transaction(ABC):

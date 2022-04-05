@@ -1,6 +1,6 @@
 from flow.src.deposit import Deposit
 from flow.src.withdrawal import Withdrawal
-from flow.src.credit import Credit
+from flow.src.card import Card
 
 from datetime import datetime as dt
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
 	# test
 	a = Bank_Account(ID = 1, name = "Aviv", balance = 10)
-	c = Credit(ID = 1756, company = "VISA", account_num = 12)
+	c = Card(ID = 1756, company = "VISA", account_num = 12)
 
 	print(a.transactions)
 	print(a.add_income(ID = 2,details = "Test 2", salary = 10, date = dt(2021,2,2)))

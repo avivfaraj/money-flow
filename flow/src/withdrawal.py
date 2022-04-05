@@ -1,8 +1,7 @@
 from flow.src.transaction import Transaction
 from datetime import datetime as dt
-from typing import Union
-from flow.src.credit import Credit
-from flow.src.debit import Debit
+from typing import Optional
+from flow.src.card import Card
 
 class Withdrawal(Transaction):
 
@@ -12,8 +11,9 @@ class Withdrawal(Transaction):
 	unit_price : float
 	amount : int
 	pay_method : str
+	discount : float
 	sector : str
-	card : Union[Credit,Debit, None]
+	card : Card
 
 	def __init__(self, ID = "",
 	 			 details = "",
@@ -22,6 +22,7 @@ class Withdrawal(Transaction):
 	 			 amount = "",
 	 			 sector = "", 
 	 			 pay_method = "Credit",
+	 			 discount = 0,
 	 			 card = None):
 
 		self.ID = ID
@@ -30,9 +31,10 @@ class Withdrawal(Transaction):
 		self.amount = amount
 		self.unit_price = unit_price
 		self.pay_method = pay_method
+		self.discount = discount
 		self.sector = sector
 		self.card = card
-		self.total = (self.unit_price , self.amount)
+		self.total = (self.unit_price , self.amount, self.discount)
 
 	@property
 	def total(self):
@@ -40,8 +42,8 @@ class Withdrawal(Transaction):
 
 	@total.setter
 	def total(self, value):
-		a,b = value
-		self._total = a * b
+		price, amount, discount = value
+		self._total = price * amount - discount 
 
 
 	@property
@@ -85,13 +87,25 @@ class Withdrawal(Transaction):
 		else:
 			raise TypeError("Secotr must be a string")
 
+
+	@property
+	def discount(self):
+		return self._discount
+
+	@discount.setter
+	def discount(self, value = 0 ):
+		if isinstance(value, (int, float)):
+			self._discount = value
+		else:
+			raise TypeError("Secotr must be a number")
+
 	@property
 	def card(self):
 		return self._card
 
 	@card.setter
 	def card(self, value = None):
-		if isinstance(value, (Credit,Debit)):
+		if isinstance(value, Card):
 			self._card = value
 
 		elif value is None:
@@ -111,18 +125,22 @@ class Withdrawal(Transaction):
 		if self.card:
 			card_str = ("\nID: "+ str(self.card.ID)+
 						"\nCompany: " +str(self.card.company))
+		
 		return ("Date: " + self.date_str() +
 				"\nTime: " + self.time_str() +
 				"\nDetails: "+ self.details +
 				"\nSector: " + self.sector +
-				"\nTotal Income: "+price +
+				"\nUnits: "+ str(self.amount) +
+				"\nPrice: " + str(self.unit_price) +
+				"\nDiscount: "+ str(self.discount) +
+				"\nTotal: "+ price +
 				"\nPayment Method: "+ self.pay_method+
 				"\nCard: " + card_str)
 
 if __name__ == "__main__":
 
 	# test
-	a = Credit(ID = 1756, company = "VISA", account_num = 12)
+	a = Card(ID = 1756, company = "VISA", account_num = 12)
 	first = Withdrawal(ID = 1,
 				 	details = "Bike shoes",
 				 	date = dt(2021, 2,4,5,6),
@@ -130,6 +148,7 @@ if __name__ == "__main__":
 				 	amount = 5,
 				 	sector = "Fashion",
 				 	pay_method = "Credit",
+				 	discount = 2,
 				 	card = a)
 
 	print(first)
