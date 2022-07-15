@@ -81,7 +81,6 @@ class Person(object):
 		# To Do
 		pass
 
-
 	def __str__(self):
 		name = self.first_name +" "+ self.last_name
 		if self.middle_name:

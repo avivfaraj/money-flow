@@ -33,7 +33,7 @@ class Payment(ABC):
 		if value:
 			self._company = value
 		else:
-			raise ValueError("Card Company is missing!")
+			raise ValueError("Payment Company is missing!")
 
 	@property
 	def account_num(self):

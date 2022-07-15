@@ -43,7 +43,7 @@ class Cheque(Payment):
 		if value:
 			self._company = value
 		else:
-			raise ValueError("Card Company is missing!")
+			raise ValueError("Company is missing!")
 
 	@property
 	def account_num(self):
