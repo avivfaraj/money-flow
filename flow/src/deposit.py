@@ -1,18 +1,18 @@
 from flow.src.transaction import Transaction
 from flow.src.wire_transfer import Wire
 from flow.src.cheque import Cheque
-
 from datetime import datetime as dt
 from typing import Union
+
 
 class Deposit(Transaction):
 
 	# Attributes
-	ID : int
-	details : str
-	total : float
-	date : dt
-	pay_method : Union[Cheque,Wire]
+	ID: int
+	details: str
+	total: float
+	date: dt
+	pay_method: Union[Cheque,Wire]
 
 	# Note: Card is not an attribute
 	# because an income is usually either
