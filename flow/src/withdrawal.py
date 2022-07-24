@@ -10,13 +10,13 @@ from typing import Union
 
 class Withdrawal(Transaction):
 
-	ID : int
-	details : str
-	date : dt
-	unit_price : float
-	amount : int
-	discount : float
-	sector : str
+	ID: int
+	details: str
+	date: dt
+	unit_price: float
+	amount: int
+	discount: float
+	sector: str
 	payment: Payment
 
 	def __init__(self,
@@ -34,7 +34,6 @@ class Withdrawal(Transaction):
 		self.date = date
 		self.amount = amount
 		self.unit_price = unit_price
-		# self.pay_method = pay_method
 		self.discount = discount
 		self.sector = sector
 		self.payment = payment
@@ -77,7 +76,7 @@ class Withdrawal(Transaction):
 			else:
 				raise ValueError("Amount Must be Positive")
 		else:
-			raise TypeError("Price must be either an iteger or float")
+			raise TypeError("Amount must be either an iteger or float")
 
 
 	@property
@@ -89,7 +88,7 @@ class Withdrawal(Transaction):
 		if isinstance(value, (str)):
 			self._sector = value
 		else:
-			raise TypeError("Secotr must be a string")
+			raise TypeError("Sector must be a string")
 
 
 	@property
@@ -101,7 +100,7 @@ class Withdrawal(Transaction):
 		if isinstance(value, (int, float)):
 			self._discount = value
 		else:
-			raise TypeError("Secotr must be a number")
+			raise TypeError("Discount must be a number")
 
 	@property
 	def payment(self):
@@ -114,6 +113,9 @@ class Withdrawal(Transaction):
 
 		elif value is None:
 			raise ValueError("Payment is missing!")
+		
+		else:
+			raise TypeError("Valid payments type: Card, Cheque and Wire")
 
 
 	def __str__(self):

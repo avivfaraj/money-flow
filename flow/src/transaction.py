@@ -3,6 +3,7 @@ from datetime import datetime as dt
 from flow.src.card import Card
 from typing import Union
 
+
 class Transaction(ABC):
 
 	ID: int
@@ -52,7 +53,7 @@ class Transaction(ABC):
 	@date.setter
 	def date(self, value = dt.now()):
 		if value:
-			if not isinstance(value,dt):
+			if not isinstance(value, dt):
 				raise Exception("Date must be datetime")
 			else:
 				self._date = value
