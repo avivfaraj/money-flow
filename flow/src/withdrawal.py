@@ -2,6 +2,11 @@ from flow.src.transaction import Transaction
 from datetime import datetime as dt
 from typing import Optional
 from flow.src.card import Card
+from flow.src.payment import Payment
+from flow.src.cheque import Cheque
+from flow.src.wire_transfer import Wire
+from typing import Union
+
 
 class Withdrawal(Transaction):
 
@@ -10,30 +15,29 @@ class Withdrawal(Transaction):
 	date : dt
 	unit_price : float
 	amount : int
-	pay_method : str
 	discount : float
 	sector : str
-	card : Card
+	payment: Payment
 
-	def __init__(self, ID = "",
+	def __init__(self,
+				 ID = "",
 	 			 details = "",
 	 			 date = dt.now(),
 	 			 unit_price = "",
 	 			 amount = "",
 	 			 sector = "", 
-	 			 pay_method = "Credit",
 	 			 discount = 0,
-	 			 card = None):
+	 			 payment: Payment = None):
 
 		self.ID = ID
 		self.details = details
 		self.date = date
 		self.amount = amount
 		self.unit_price = unit_price
-		self.pay_method = pay_method
+		# self.pay_method = pay_method
 		self.discount = discount
 		self.sector = sector
-		self.card = card
+		self.payment = payment
 		self.total = (self.unit_price , self.amount, self.discount)
 
 	@property
@@ -100,32 +104,21 @@ class Withdrawal(Transaction):
 			raise TypeError("Secotr must be a number")
 
 	@property
-	def card(self):
-		return self._card
+	def payment(self):
+		return self._payment
 
-	@card.setter
-	def card(self, value = None):
-		if isinstance(value, Card):
-			self._card = value
+	@payment.setter
+	def payment(self, value = None):
+		if isinstance(value, (Card, Cheque, Wire)):
+			self._payment = value
 
 		elif value is None:
-			if self.pay_method in ["Credit", "Debit"]:
-				raise ValueError("Card is missing!")
-			
-			self._card = None
-
-		else:
-			raise TypeError("Card's instance accept Credit, Debit or None!")
+			raise ValueError("Payment is missing!")
 
 
 	def __str__(self):
 		price = "{:,.2f} $".format(self.total)
 
-		card_str = ""
-		if self.card:
-			card_str = ("\nID: "+ str(self.card.ID)+
-						"\nCompany: " +str(self.card.company))
-		
 		return ("Date: " + self.date_str() +
 				"\nTime: " + self.time_str() +
 				"\nDetails: "+ self.details +
@@ -134,8 +127,7 @@ class Withdrawal(Transaction):
 				"\nPrice: " + str(self.unit_price) +
 				"\nDiscount: "+ str(self.discount) +
 				"\nTotal: "+ price +
-				"\nPayment Method: "+ self.pay_method+
-				"\nCard: " + card_str)
+				"\nPayment Method: "+ str(self.payment))
 
 if __name__ == "__main__":
 
@@ -147,9 +139,8 @@ if __name__ == "__main__":
 				 	unit_price = 2,
 				 	amount = 5,
 				 	sector = "Fashion",
-				 	pay_method = "Credit",
-				 	discount = 2,
-				 	card = a)
+				 	payment = a,
+				 	discount = 2)
 
 	print(first)
 
