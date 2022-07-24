@@ -5,10 +5,10 @@ from typing import Union
 
 class Transaction(ABC):
 
-	ID : int
-	details : str
-	date : dt
-	pay_method : str
+	ID: int
+	details: str
+	date: dt
+	pay_method: str
 	
 
 	@abstractmethod

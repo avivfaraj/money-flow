@@ -59,7 +59,7 @@ class TestCard():
             _ = Card(4444, account_num = 123)
 
         exception_msg = excinfo.value.args[0]
-        assert exception_msg == "Card Company is missing!"
+        assert exception_msg == "Company is missing!"
 
     def test_account_num_failure(self):
         """ Make sure an invalid account number raises exceptions """

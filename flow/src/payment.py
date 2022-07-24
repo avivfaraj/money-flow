@@ -30,11 +30,11 @@ class Payment(ABC):
         return self._company
 
     @company.setter
-    def company(self, value = ""):
+    def company(self, value = "" ):
         if value:
             self._company = value
         else:
-            raise ValueError("Payment Company is missing!")
+            raise ValueError("Company is missing!")
 
     @property
     def account_num(self):
@@ -43,7 +43,7 @@ class Payment(ABC):
     @account_num.setter
     def account_num(self, value = None):
         if value:
-            if not isinstance(value, int):
+            if not isinstance(value,int):
                 raise TypeError("Account Number must be an integer")
             else:
                 self._account_num = value
